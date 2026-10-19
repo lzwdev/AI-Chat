@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groq AI Chat</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-theme">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<style>
+/* ============================================================
+   THEME: DARK
+   ============================================================ */
+body.theme-dark { background: #0b0f17 !important; color: #e8edf5 !important; }
+body.theme-dark .app { background: #141a24 !important; border-color: #2a3341 !important; }
+body.theme-dark .sidebar { background: #10161f !important; border-color: #2a3341 !important; }
+body.theme-dark .header { background: #141a24 !important; border-color: #2a3341 !important; }
+body.theme-dark .chat { background: #141a24 !important; }
+body.theme-dark .input-area { background: #141a24 !important; border-color: #2a3341 !important; }
+body.theme-dark .status { background: #141a24 !important; color: #64748b !important; }
+body.theme-dark .bubble.bot { background: #1a2330 !important; border-color: #2a3341 !important; color: #e8edf5 !important; }
+body.theme-dark .bubble.user { background: #1e3a2e !important; border-color: #2a5a3e !important; color: #dcfce7 !important; }
+body.theme-dark .settings-panel { background: #1e2632 !important; border-color: #334155 !important; }
+body.theme-dark .dropdown-trigger { background: #1e2632 !important; border-color: #334155 !important; color: #e8edf5 !important; }
+body.theme-dark .dropdown-menu { background: #1e2632 !important; border-color: #334155 !important; }
+body.theme-dark .dropdown-item { color: #cbd5e1 !important; }
+body.theme-dark .dropdown-item:hover { background: #26303e !important; color: #fff !important; }
+body.theme-dark .dropdown-item.active { background: #4ade80 !important; color: #0b0f17 !important; }
+body.theme-dark .icon-btn { background: #1e2632 !important; border-color: #334155 !important; color: #e8edf5 !important; }
+body.theme-dark .icon-btn:hover { background: #26303e !important; border-color: #4ade80 !important; }
+body.theme-dark .chat-item { color: #cbd5e1 !important; }
+body.theme-dark .chat-item:hover { background: #1e2632 !important; color: #e8edf5 !important; }
+body.theme-dark .chat-item.active { background: #26303e !important; color: #e8edf5 !important; }
+body.theme-dark .chat-title-input { background: #1e2632 !important; color: #e8edf5 !important; border-color: #4ade80 !important; }
+body.theme-dark textarea { background: #1e2632 !important; border-color: #334155 !important; color: #e8edf5 !important; }
+body.theme-dark textarea::placeholder { color: #64748b !important; }
+body.theme-dark .settings-title { color: #e8edf5 !important; }
+body.theme-dark .settings-row label { color: #cbd5e1 !important; }
+body.theme-dark .settings-info { color: #64748b !important; }
+body.theme-dark .settings-divider { background: #2a3341 !important; }
+body.theme-dark .empty-chat { color: #64748b !important; }
+body.theme-dark .header h1 { color: #cbd5e1 !important; }
+body.theme-dark .code-block { background: #0d1117 !important; border-color: #2a3341 !important; }
+body.theme-dark .code-header { background: #161b22 !important; border-color: #2a3341 !important; color: #94a3b8 !important; }
+body.theme-dark .code-block pre { background: #0d1117 !important; }
+body.theme-dark .code-block pre code { color: #e6edf3 !important; }
+body.theme-dark .bubble code:not(pre code) { background: #0d1117 !important; color: #e6edf3 !important; border-color: #2a3341 !important; }
+body.theme-dark .toggle-slider { background: #334155 !important; }
+body.theme-dark .toggle-switch input:checked + .toggle-slider { background: #4ade80 !important; }
+body.theme-dark .theme-indicator { background: #1e2632 !important; color: #4ade80 !important; border-color: #4ade80 !important; }
+body.theme-dark .bubble th, body.theme-dark .bubble td { border-color: #334155 !important; }
+body.theme-dark .bubble th { background: rgba(255,255,255,0.05) !important; }
+body.theme-dark .bubble tr:nth-child(even) td { background: rgba(255,255,255,0.02) !important; }
+body.theme-dark .bubble hr { border-top-color: #334155 !important; }
+
+/* ============================================================
+   THEME: LIGHT
+   ============================================================ */
+body.theme-light { background: #f1f5f9 !important; color: #0f172a !important; }
+body.theme-light .app { background: #ffffff !important; border-color: #e2e8f0 !important; }
+body.theme-light .sidebar { background: #f8fafc !important; border-color: #e2e8f0 !important; }
+body.theme-light .header { background: #ffffff !important; border-color: #e2e8f0 !important; }
+body.theme-light .chat { background: #ffffff !important; }
+body.theme-light .input-area { background: #ffffff !important; border-color: #e2e8f0 !important; }
+body.theme-light .status { background: #ffffff !important; color: #64748b !important; }
+body.theme-light .bubble.bot { background: #f8fafc !important; border-color: #e2e8f0 !important; color: #0f172a !important; }
+body.theme-light .bubble.user { background: #dcfce7 !important; border-color: #86efac !important; color: #14532d !important; }
+body.theme-light .settings-panel { background: #f8fafc !important; border-color: #cbd5e1 !important; }
+body.theme-light .dropdown-trigger { background: #f8fafc !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+body.theme-light .dropdown-menu { background: #f8fafc !important; border-color: #cbd5e1 !important; }
+body.theme-light .dropdown-item { color: #334155 !important; }
+body.theme-light .dropdown-item:hover { background: #e2e8f0 !important; color: #0f172a !important; }
+body.theme-light .dropdown-item.active { background: #16a34a !important; color: #ffffff !important; }
+body.theme-light .icon-btn { background: #f8fafc !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+body.theme-light .icon-btn:hover { background: #e2e8f0 !important; border-color: #16a34a !important; }
+body.theme-light .chat-item { color: #334155 !important; }
+body.theme-light .chat-item:hover { background: #e2e8f0 !important; color: #0f172a !important; }
+body.theme-light .chat-item.active { background: #dbeafe !important; color: #0f172a !important; }
+body.theme-light .chat-title-input { background: #f1f5f9 !important; color: #0f172a !important; border-color: #16a34a !important; }
+body.theme-light textarea { background: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+body.theme-light textarea::placeholder { color: #64748b !important; }
+body.theme-light .settings-title { color: #0f172a !important; }
+body.theme-light .settings-row label { color: #334155 !important; }
+body.theme-light .settings-info { color: #64748b !important; }
+body.theme-light .settings-divider { background: #e2e8f0 !important; }
+body.theme-light .empty-chat { color: #64748b !important; }
+body.theme-light .header h1 { color: #334155 !important; }
+body.theme-light .code-block { background: #f6f8fa !important; border-color: #e2e8f0 !important; }
+body.theme-light .code-header { background: #eaeef2 !important; border-color: #e2e8f0 !important; color: #57606a !important; }
+body.theme-light .code-block pre { background: #f6f8fa !important; }
+body.theme-light .code-block pre code { color: #1f2328 !important; }
+body.theme-light .bubble code:not(pre code) { background: #f6f8fa !important; color: #1f2328 !important; border-color: #e2e8f0 !important; }
+body.theme-light .toggle-slider { background: #cbd5e1 !important; }
+body.theme-light .toggle-switch input:checked + .toggle-slider { background: #16a34a !important; }
+body.theme-light .theme-indicator { background: #f8fafc !important; color: #16a34a !important; border-color: #16a34a !important; }
+body.theme-light .bubble th, body.theme-light .bubble td { border-color: #e2e8f0 !important; }
+body.theme-light .bubble th { background: #f1f5f9 !important; }
+body.theme-light .bubble tr:nth-child(even) td { background: #f8fafc !important; }
+body.theme-light .bubble hr { border-top-color: #e2e8f0 !important; }
+
+/* ============================================================
+   BASIS-STYLES
+   ============================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100vh; overflow: hidden; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+body { transition: background 0.25s, color 0.25s; }
+
+.layout { display: flex; width: 100%; height: 100vh; max-width: 1400px; margin: 0 auto; }
+
+.sidebar { width: 280px; border-right: 1px solid; display: flex; flex-direction: column; transition: width 0.3s; overflow: hidden; flex-shrink: 0; }
+.sidebar.collapsed { width: 0; border-right: none; }
+.sidebar-header { padding: 14px 16px; display: flex; gap: 10px; border-bottom: 1px solid; flex-shrink: 0; }
+.new-chat-btn { flex: 1; background: #4ade80; color: #0b0f17; border: none; border-radius: 12px; padding: 10px 14px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.new-chat-btn:hover { background: #22c55e; }
+.new-chat-btn svg { width: 16px; height: 16px; stroke: currentColor; }
+
+.chat-list { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 2px; }
+.chat-item { padding: 10px 12px; border-radius: 10px; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 8px; position: relative; white-space: nowrap; transition: background 0.15s; }
+.chat-item .chat-title { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.chat-item .delete-chat { opacity: 0; background: transparent; border: none; cursor: pointer; padding: 0 2px; display: flex; align-items: center; }
+.chat-item .delete-chat svg { width: 14px; height: 14px; stroke: currentColor; }
+.chat-item:hover .delete-chat { opacity: 1; }
+
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.header { padding: 12px 18px; border-bottom: 1px solid; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; position: relative; }
+.icon-btn { border-radius: 10px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+.icon-btn svg { width: 18px; height: 18px; stroke: currentColor; }
+.icon-btn.round { border-radius: 50%; }
+.header h1 { font-size: 1rem; font-weight: 600; margin-right: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
+.header h1 svg { width: 18px; height: 18px; stroke: #4ade80; }
+
+.theme-indicator { padding: 4px 10px; border-radius: 20px; border: 1px solid; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
+
+.dropdown { position: relative; min-width: 210px; }
+.dropdown-trigger { display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 1px solid; border-radius: 40px; padding: 8px 14px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; overflow: hidden; }
+.dropdown-trigger span:first-child { overflow: hidden; text-overflow: ellipsis; }
+.dropdown-trigger .arrow { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid currentColor; flex-shrink: 0; }
+.dropdown-menu { position: absolute; top: calc(100% + 8px); right: 0; width: 100%; max-height: 300px; overflow-y: auto; border: 1px solid; border-radius: 16px; padding: 6px; z-index: 50; display: none; flex-direction: column; gap: 2px; }
+.dropdown.open .dropdown-menu { display: flex; }
+.dropdown-item { padding: 9px 12px; border-radius: 10px; font-size: 0.76rem; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.settings-panel { position: absolute; top: 58px; right: 18px; width: 300px; border: 1px solid; border-radius: 18px; padding: 16px; z-index: 100; display: none; flex-direction: column; gap: 14px; }
+.settings-panel.open { display: flex; }
+.settings-title { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; }
+.settings-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.settings-row label { font-size: 0.82rem; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.settings-row label svg { width: 14px; height: 14px; stroke: currentColor; }
+.settings-divider { height: 1px; }
+.settings-info { font-size: 0.7rem; line-height: 1.4; }
+
+.toggle-switch { position: relative; width: 46px; height: 24px; flex-shrink: 0; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-slider { position: absolute; inset: 0; border-radius: 24px; cursor: pointer; transition: background 0.25s; }
+.toggle-slider::before { content: ''; position: absolute; height: 18px; width: 18px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: transform 0.25s; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(22px); }
+
+.chat { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.message { display: flex; gap: 12px; max-width: 100%; }
+.message.user { flex-direction: row-reverse; }
+.avatar { width: 34px; height: 34px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #4ade80; }
+.avatar svg { width: 18px; height: 18px; stroke: #0b0f17; }
+.message.bot .avatar { background: #334155; }
+.message.bot .avatar svg { stroke: #cbd5e1; }
+.bubble { padding: 12px 16px; border-radius: 18px; font-size: 0.9rem; line-height: 1.6; max-width: 85%; word-break: break-word; border: 1px solid; }
+.message.user .bubble { border-top-right-radius: 6px; }
+.message.bot .bubble { border-top-left-radius: 6px; }
+.bubble p { margin: 0.6em 0; }
+.bubble p:first-child { margin-top: 0; }
+.bubble p:last-child { margin-bottom: 0; }
+.bubble ul, .bubble ol { padding-left: 1.5em; margin: 0.6em 0; }
+.bubble h1, .bubble h2, .bubble h3, .bubble h4 { margin: 0.7em 0 0.3em; }
+.bubble h1 { font-size: 1.4em; }
+.bubble h2 { font-size: 1.25em; }
+.bubble h3 { font-size: 1.1em; }
+.bubble h4 { font-size: 1em; }
+.bubble a { color: #4ade80; text-decoration: none; }
+.bubble a:hover { text-decoration: underline; }
+.bubble strong { font-weight: 600; }
+.bubble em { font-style: italic; }
+.bubble blockquote { border-left: 3px solid #4ade80; padding-left: 12px; margin: 8px 0; opacity: 0.9; }
+
+/* Tabellen */
+.bubble table { border-collapse: collapse; margin: 12px 0; width: 100%; font-size: 0.85rem; }
+.bubble th, .bubble td { border: 1px solid #334155; padding: 8px 12px; text-align: left; vertical-align: top; }
+.bubble th { background: rgba(255,255,255,0.05); font-weight: 600; }
+.bubble tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+.bubble hr { border: none; border-top: 1px solid #334155; margin: 16px 0; }
+
+.bubble code:not(pre code) { font-family: 'JetBrains Mono', 'Fira Code', monospace; padding: 2px 6px; border-radius: 6px; font-size: 0.85em; border: 1px solid; }
+
+.code-block { margin: 12px 0; border-radius: 10px; overflow: hidden; border: 1px solid; width: 100%; }
+.code-header { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; border-bottom: 1px solid; font-size: 0.7rem; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.5px; }
+.code-lang { display: flex; align-items: center; gap: 6px; }
+.code-lang svg { width: 12px; height: 12px; stroke: currentColor; }
+.copy-btn { background: transparent; border: none; cursor: pointer; padding: 3px 6px; border-radius: 5px; display: flex; align-items: center; gap: 4px; font-size: 0.7rem; font-family: inherit; color: inherit; }
+.copy-btn svg { width: 13px; height: 13px; stroke: currentColor; }
+.copy-btn:hover { background: rgba(255,255,255,0.1); }
+.copy-btn.copied { color: #4ade80; }
+.code-block pre { margin: 0; padding: 14px 16px; overflow-x: auto; font-size: 0.8rem; white-space: pre; }
+.code-block pre code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82rem; line-height: 1.55; background: transparent !important; padding: 0 !important; display: block; }
+
+.cursor-blink { display: inline-block; width: 8px; height: 1.1em; background: #4ade80; margin-left: 4px; vertical-align: text-bottom; animation: blink 1s infinite; }
+@keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+
+.empty-chat { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; }
+.empty-chat svg { width: 48px; height: 48px; stroke: currentColor; }
+.empty-chat p { font-size: 0.85rem; }
+
+.input-area { padding: 14px 18px; border-top: 1px solid; display: flex; gap: 10px; }
+.input-area textarea { flex: 1; border: 1px solid; border-radius: 20px; padding: 12px 18px; font-size: 0.9rem; font-family: inherit; resize: none; outline: none; min-height: 48px; max-height: 120px; }
+.send-btn { background: #4ade80; border: none; border-radius: 20px; padding: 0 20px; font-weight: 600; font-size: 0.88rem; color: #0b0f17; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.send-btn svg { width: 16px; height: 16px; stroke: currentColor; }
+.send-btn:hover:not(:disabled) { background: #22c55e; }
+.send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.status { font-size: 0.68rem; padding: 0 18px 8px; text-align: right; }
+
+input[type="range"] { width: 100%; accent-color: #4ade80; }
+</style>
+</head>
+<body class="theme-dark">
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
+    <symbol id="icon-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+    <symbol id="icon-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+    <symbol id="icon-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="icon-bot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></symbol>
+    <symbol id="icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+    <symbol id="icon-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+    <symbol id="icon-thermometer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></symbol>
+    <symbol id="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="icon-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+    <symbol id="icon-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+</svg>
+
+<div class="layout">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <button class="new-chat-btn" id="newChatBtn">
+                <svg><use href="#icon-plus"/></svg> Neuer Chat
+            </button>
+        </div>
+        <div class="chat-list" id="chatList"></div>
+    </aside>
+
+    <main class="main">
+        <div class="header">
+            <button class="icon-btn" id="sidebarToggle"><svg><use href="#icon-menu"/></svg></button>
+            <h1><svg><use href="#icon-bolt"/></svg> Groq Chat</h1>
+            <span class="theme-indicator" id="themeIndicator">DARK</span>
+            <div class="dropdown" id="modelDropdown">
+                <div class="dropdown-trigger" id="dropdownTrigger">
+                    <span id="selectedModelLabel">Modelle laden...</span>
+                    <span class="arrow"></span>
+                </div>
+                <div class="dropdown-menu" id="dropdownMenu"></div>
+            </div>
+            <button class="icon-btn round" id="settingsBtn"><svg><use href="#icon-settings"/></svg></button>
+            <div class="settings-panel" id="settingsPanel">
+                <div class="settings-title">Einstellungen</div>
+                <div class="settings-row">
+                    <label for="themeToggle"><svg><use href="#icon-moon"/></svg> Dark Mode</label>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="themeToggle" checked>
+                        <span class="toggle-slider" id="toggleSlider"></span>
+                    </div>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-row">
+                    <label for="temperatureRange"><svg><use href="#icon-thermometer"/></svg> Temperatur</label>
+                    <span id="tempValue" style="font-size:0.8rem;color:#4ade80;font-weight:600;">0.7</span>
+                </div>
+                <input type="range" id="temperatureRange" min="0" max="2" step="0.1" value="0.7">
+                <div class="settings-divider"></div>
+                <div class="settings-info">Chats, Theme und Temperatur werden lokal gespeichert.</div>
+            </div>
+        </div>
+        <div class="chat" id="chatContainer"></div>
+        <div class="status" id="statusLine">Bereit</div>
+        <div class="input-area">
+            <textarea id="userInput" rows="1" placeholder="Nachricht eingeben..."></textarea>
+            <button class="send-btn" id="sendBtn"><svg><use href="#icon-send"/></svg> Senden</button>
+        </div>
+    </main>
+</div>
+
+<script>
+(function() {
+    'use strict';
+
+    // ============================================================
+    // 1. THEME
+    // ============================================================
+    function applyHljsTheme(theme) {
+        var link = document.getElementById('hljs-theme');
+        if (!link) return;
+        link.href = theme === 'dark'
+            ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css'
+            : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
+    }
+
+    function setTheme(theme) {
+        theme = (theme === 'light') ? 'light' : 'dark';
+        document.body.classList.remove('theme-dark', 'theme-light');
+        document.body.classList.add('theme-' + theme);
+        var t = document.getElementById('themeToggle');
+        if (t) t.checked = (theme === 'dark');
+        var ind = document.getElementById('themeIndicator');
+        if (ind) ind.textContent = theme.toUpperCase();
+        applyHljsTheme(theme);
+        try { localStorage.setItem('groq-theme', theme); } catch (e) {}
+        setTimeout(function() {
+            document.querySelectorAll('.code-block pre code[data-raw]').forEach(function(block) {
+                rehighlight(block);
+            });
+        }, 150);
+        console.log('[Theme] ->', theme);
+    }
+
+    function rehighlight(block) {
+        if (!block || !window.hljs) return;
+        var raw = block.getAttribute('data-raw');
+        if (!raw) return;
+        try { raw = decodeURIComponent(raw); } catch (e) {}
+        var lang = block.getAttribute('data-lang') || '';
+        block.className = '';
+        block.removeAttribute('data-highlighted');
+        try {
+            if (lang && hljs.getLanguage(lang)) {
+                block.innerHTML = hljs.highlight(raw, { language: lang, ignoreIllegals: true }).value;
+            } else {
+                block.innerHTML = hljs.highlightAuto(raw).value;
+            }
+            block.classList.add('hljs');
+        } catch (e) {
+            block.textContent = raw;
+        }
+    }
+
+    function bindToggle() {
+        var input = document.getElementById('themeToggle');
+        var slider = document.getElementById('toggleSlider');
+        if (input) {
+            input.addEventListener('change', function() {
+                console.log('Input change ->', this.checked);
+                setTheme(this.checked ? 'dark' : 'light');
+            });
+        }
+        if (slider) {
+            slider.addEventListener('click', function(e) {
+                e.preventDefault();
+                var inp = document.getElementById('themeToggle');
+                if (!inp) return;
+                inp.checked = !inp.checked;
+                console.log('Slider click ->', inp.checked);
+                setTheme(inp.checked ? 'dark' : 'light');
+            });
+        }
+        console.log('[Init] Toggle gebunden:', !!input, !!slider);
+    }
+    bindToggle();
+
+    var initial = 'dark';
+    try {
+        var saved = localStorage.getItem('groq-theme');
+        if (saved === 'dark' || saved === 'light') initial = saved;
+    } catch (e) {}
+    setTheme(initial);
+
+    // ============================================================
+    // 2. STATE
+    // ============================================================
+    var API_KEY = "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";
+    var GROQ_BASE = "https://api.groq.com/openai/v1";
+    var selectedModel = "";
+    var allModels = [];
+    var isStreaming = false;
+    var currentController = null;
+    var temperature = 0.7;
+    var chats = [];
+    var activeChatId = null;
+    var editingChatId = null;
+
+    function $(id) { return document.getElementById(id); }
+    function esc(t) {
+        var d = document.createElement('div');
+        d.textContent = t == null ? '' : String(t);
+        return d.innerHTML;
+    }
+
+    // ============================================================
+    // 3. MARKDOWN-PARSER
+    // ============================================================
+    function renderMarkdown(text) {
+        if (!text) return '';
+        text = String(text);
+
+        // Code-Blöcke extrahieren
+        var codeBlocks = [];
+        var codeRegex = /```(\w*)\n?([\s\S]*?)```/g;
+        var placeholder = '\u0000CODE_BLOCK_';
+        text = text.replace(codeRegex, function(match, lang, code) {
+            var idx = codeBlocks.length;
+            codeBlocks.push({ lang: lang || '', code: code.replace(/\n$/, '') });
+            return placeholder + idx + '\u0000';
+        });
+
+        var lines = text.split('\n');
+        var out = [];
+        var inList = false;
+        var listType = null;
+        var inBlockquote = false;
+
+        function closeList() {
+            if (inList) { out.push('</' + listType + '>'); inList = false; listType = null; }
+        }
+        function closeBlockquote() {
+            if (inBlockquote) { out.push('</blockquote>'); inBlockquote = false; }
+        }
+
+        function isTableSeparator(line) {
+            return /^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)+\|?\s*$/.test(line);
+        }
+
+        function parseTableRow(line) {
+            var trimmed = line.trim();
+            if (trimmed.charAt(0) === '|') trimmed = trimmed.slice(1);
+            if (trimmed.charAt(trimmed.length - 1) === '|') trimmed = trimmed.slice(0, -1);
+            return trimmed.split('|').map(function(c) { return c.trim(); });
+        }
+
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i];
+
+            if (line.trim() === '') {
+                closeList();
+                closeBlockquote();
+                out.push('<br>');
+                continue;
+            }
+
+            // Code-Block
+            var phMatch = line.match(/\u0000CODE_BLOCK_(\d+)\u0000/);
+            if (phMatch) {
+                closeList();
+                closeBlockquote();
+                var cb = codeBlocks[parseInt(phMatch[1], 10)];
+                var langLabel = cb.lang || 'code';
+                var langClass = cb.lang ? ('language-' + cb.lang) : '';
+                out.push('<div class="code-block">');
+                out.push('<div class="code-header"><span class="code-lang"><svg><use href="#icon-code"/></svg> ' + esc(langLabel) + '</span><button class="copy-btn" data-copy><svg><use href="#icon-copy"/></svg> Kopieren</button></div>');
+                out.push('<pre><code class="hljs ' + langClass + '" data-raw="' + encodeURIComponent(cb.code) + '" data-lang="' + esc(cb.lang) + '">' + esc(cb.code) + '</code></pre>');
+                out.push('</div>');
+                continue;
+            }
+
+            // Tabelle
+            if (line.indexOf('|') !== -1 && i + 1 < lines.length && isTableSeparator(lines[i + 1])) {
+                closeList();
+                closeBlockquote();
+                var headers = parseTableRow(line);
+                i++;
+                out.push('<table><thead><tr>');
+                headers.forEach(function(h) { out.push('<th>' + inlineFormat(h) + '</th>'); });
+                out.push('</tr></thead><tbody>');
+                while (i + 1 < lines.length && lines[i + 1].indexOf('|') !== -1 && lines[i + 1].trim() !== '') {
+                    i++;
+                    var cells = parseTableRow(lines[i]);
+                    out.push('<tr>');
+                    cells.forEach(function(c) { out.push('<td>' + inlineFormat(c) + '</td>'); });
+                    out.push('</tr>');
+                }
+                out.push('</tbody></table>');
+                continue;
+            }
+
+            // Horizontale Linie
+            if (/^\s*(---|\*\*\*|___)\s*$/.test(line)) {
+                closeList();
+                closeBlockquote();
+                out.push('<hr>');
+                continue;
+            }
+
+            // Überschrift
+            var hMatch = line.match(/^(#{1,4})\s+(.*)$/);
+            if (hMatch) {
+                closeList(); closeBlockquote();
+                var level = hMatch[1].length;
+                out.push('<h' + level + '>' + inlineFormat(hMatch[2]) + '</h' + level + '>');
+                continue;
+            }
+
+            // Blockquote
+            var bqMatch = line.match(/^>\s?(.*)$/);
+            if (bqMatch) {
+                closeList();
+                if (!inBlockquote) { out.push('<blockquote>'); inBlockquote = true; }
+                out.push('<p>' + inlineFormat(bqMatch[1]) + '</p>');
+                continue;
+            } else {
+                closeBlockquote();
+            }
+
+            // Ungeordnete Liste
+            var ulMatch = line.match(/^\s*[-*+]\s+(.*)$/);
+            if (ulMatch) {
+                closeBlockquote();
+                if (!inList || listType !== 'ul') { closeList(); out.push('<ul>'); inList = true; listType = 'ul'; }
+                out.push('<li>' + inlineFormat(ulMatch[1]) + '</li>');
+                continue;
+            }
+
+            // Geordnete Liste
+            var olMatch = line.match(/^\s*\d+\.\s+(.*)$/);
+            if (olMatch) {
+                closeBlockquote();
+                if (!inList || listType !== 'ol') { closeList(); out.push('<ol>'); inList = true; listType = 'ol'; }
+                out.push('<li>' + inlineFormat(olMatch[1]) + '</li>');
+                continue;
+            }
+
+            // Normaler Absatz
+            closeList();
+            closeBlockquote();
+            out.push('<p>' + inlineFormat(line) + '</p>');
+        }
+
+        closeList();
+        closeBlockquote();
+
+        var html = out.join('');
+        var tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        tmp.querySelectorAll('.code-block pre code[data-raw]').forEach(function(block) {
+            rehighlight(block);
+        });
+        return tmp.innerHTML;
+    }
+
+    function inlineFormat(s) {
+        if (!s) return '';
+        var codeRe = /`([^`]+)`/g;
+        var m;
+        var lastIdx = 0;
+        var result = '';
+        while ((m = codeRe.exec(s)) !== null) {
+            result += esc(s.slice(lastIdx, m.index));
+            result += '<code>' + esc(m[1]) + '</code>';
+            lastIdx = m.index + m[0].length;
+        }
+        result += esc(s.slice(lastIdx));
+        result = result.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        result = result.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>');
+        result = result.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+        return result;
+    }
+
+    // ============================================================
+    // 4. CHAT STORAGE
+    // ============================================================
+    function saveChats() {
+        try {
+            localStorage.setItem('groq-chats', JSON.stringify(chats));
+            localStorage.setItem('groq-active-chat', activeChatId || '');
+        } catch (e) {}
+    }
+
+    function loadChats() {
+        try {
+            var s = JSON.parse(localStorage.getItem('groq-chats') || '[]');
+            if (Array.isArray(s)) chats = s;
+        } catch (e) { chats = []; }
+        activeChatId = localStorage.getItem('groq-active-chat') || null;
+        if (chats.length === 0) createChat(false);
+        else if (!chats.find(function(c) { return c.id === activeChatId; })) activeChatId = chats[0].id;
+        renderChatList();
+        renderActiveChat();
+    }
+
+    function createChat(switchTo) {
+        if (switchTo === undefined) switchTo = true;
+        var id = 'chat_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+        var chat = { id: id, title: 'Neuer Chat', messages: [], autoNamed: false };
+        chats.unshift(chat);
+        if (switchTo) { activeChatId = id; renderActiveChat(); }
+        renderChatList();
+        saveChats();
+        return chat;
+    }
+
+    function getActiveChat() {
+        return chats.find(function(c) { return c.id === activeChatId; });
+    }
+
+    // ============================================================
+    // 5. CHAT LIST
+    // ============================================================
+    function renderChatList() {
+        var el = $('chatList');
+        if (!el) return;
+        el.innerHTML = '';
+        if (chats.length === 0) {
+            el.innerHTML = '<div style="padding:20px;font-size:0.75rem;text-align:center;opacity:0.6;">Keine Chats</div>';
+            return;
+        }
+        chats.forEach(function(chat) {
+            var item = document.createElement('div');
+            item.className = 'chat-item' + (chat.id === activeChatId ? ' active' : '');
+            if (editingChatId === chat.id) {
+                var inp = document.createElement('input');
+                inp.className = 'chat-title-input';
+                inp.value = chat.title;
+                inp.style.cssText = 'flex:1;padding:2px 6px;border-radius:6px;font-size:0.82rem;outline:none;border:1px solid #4ade80;font-family:inherit;min-width:0;';
+                inp.addEventListener('click', function(e) { e.stopPropagation(); });
+                inp.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') finishRename(chat.id, inp.value);
+                    else if (e.key === 'Escape') cancelRename();
+                });
+                inp.addEventListener('blur', function() {
+                    setTimeout(function() { if (editingChatId === chat.id) finishRename(chat.id, inp.value); }, 100);
+                });
+                item.appendChild(inp);
+                setTimeout(function() { inp.focus(); inp.select(); }, 0);
+            } else {
+                var t = document.createElement('span');
+                t.className = 'chat-title';
+                t.textContent = chat.title;
+                item.appendChild(t);
+                var d = document.createElement('button');
+                d.className = 'delete-chat';
+                d.innerHTML = '<svg><use href="#icon-trash"/></svg>';
+                d.addEventListener('click', function(e) { e.stopPropagation(); deleteChat(chat.id); });
+                item.appendChild(d);
+            }
+            item.addEventListener('click', function() {
+                if (editingChatId === chat.id) return;
+                activeChatId = chat.id;
+                renderChatList();
+                renderActiveChat();
+                saveChats();
+            });
+            item.addEventListener('dblclick', function(e) {
+                e.stopPropagation();
+                editingChatId = chat.id;
+                renderChatList();
+            });
+            el.appendChild(item);
+        });
+    }
+
+    function cancelRename() { editingChatId = null; renderChatList(); }
+    function finishRename(id, nt) {
+        var c = chats.find(function(x) { return x.id === id; });
+        if (c) { var tr = (nt || '').trim(); if (tr) c.title = tr; c.autoNamed = true; }
+        editingChatId = null;
+        renderChatList();
+        saveChats();
+    }
+    function deleteChat(id) {
+        var idx = chats.findIndex(function(c) { return c.id === id; });
+        if (idx === -1) return;
+        chats.splice(idx, 1);
+        if (activeChatId === id) {
+            activeChatId = chats.length > 0 ? chats[0].id : null;
+            if (!activeChatId) createChat(false);
+        }
+        renderChatList();
+        renderActiveChat();
+        saveChats();
+    }
+
+    // ============================================================
+    // 6. CHAT ANZEIGE
+    // ============================================================
+    function renderActiveChat() {
+        var el = $('chatContainer');
+        if (!el) return;
+        el.innerHTML = '';
+        var chat = getActiveChat();
+        if (!chat || chat.messages.length === 0) {
+            el.innerHTML = '<div class="empty-chat"><svg><use href="#icon-message"/></svg><p>Schreibe eine Nachricht, um zu starten.</p></div>';
+            return;
+        }
+        chat.messages.forEach(function(msg) {
+            if (msg.role === 'user') addUserMessage(msg.content);
+            else addBotMessage(msg.content);
+        });
+        scrollToBottom();
+    }
+
+    function addUserMessage(text) {
+        var el = $('chatContainer');
+        if (!el) return;
+        var m = document.createElement('div');
+        m.className = 'message user';
+        m.innerHTML = '<div class="avatar"><svg><use href="#icon-user"/></svg></div><div class="bubble">' + esc(text).replace(/\n/g, '<br>') + '</div>';
+        el.appendChild(m);
+        scrollToBottom();
+    }
+
+    function addBotMessage(text) {
+        var el = $('chatContainer');
+        if (!el) return;
+        var m = document.createElement('div');
+        m.className = 'message bot';
+        m.innerHTML = '<div class="avatar"><svg><use href="#icon-bot"/></svg></div><div class="bubble">' + renderMarkdown(text) + '</div>';
+        el.appendChild(m);
+        scrollToBottom();
+        return m.querySelector('.bubble');
+    }
+
+    function createStreamingBubble() {
+        var el = $('chatContainer');
+        if (!el) return null;
+        var m = document.createElement('div');
+        m.className = 'message bot';
+        m.innerHTML = '<div class="avatar"><svg><use href="#icon-bot"/></svg></div><div class="bubble"><span class="cursor-blink"></span></div>';
+        el.appendChild(m);
+        scrollToBottom();
+        return m.querySelector('.bubble');
+    }
+
+    function scrollToBottom() {
+        var el = $('chatContainer');
+        if (el) el.scrollTop = el.scrollHeight;
+    }
+
+    // ============================================================
+    // 7. MODELLE
+    // ============================================================
+    function fetchModels() {
+        fetch(GROQ_BASE + '/models', { headers: { Authorization: 'Bearer ' + API_KEY } })
+            .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(function(data) {
+                var ex = ['whisper', 'tts', 'guard', 'safeguard', 'prompt-guard', 'saba'];
+                allModels = (data.data || []).filter(function(m) {
+                    return !ex.some(function(e) { return m.id.toLowerCase().indexOf(e) !== -1; });
+                }).map(function(m) { return m.id; }).sort();
+                if (allModels.length === 0) throw new Error('Keine Modelle');
+                renderDropdown(allModels);
+                var saved = localStorage.getItem('groq-model');
+                var pref = (saved && allModels.indexOf(saved) !== -1) ? saved : (allModels.find(function(m) { return m.indexOf('llama-3.3-70b') !== -1; }) || allModels[0]);
+                selectModel(pref);
+                var s = $('statusLine');
+                if (s) s.textContent = allModels.length + ' Modelle geladen';
+            })
+            .catch(function(err) {
+                console.error('Modelle:', err);
+                var l = $('selectedModelLabel');
+                if (l) l.textContent = 'Modelle nicht verfügbar';
+                var s = $('statusLine');
+                if (s) s.textContent = 'Fehler beim Laden';
+            });
+    }
+
+    function renderDropdown(models) {
+        var el = $('dropdownMenu');
+        if (!el) return;
+        el.innerHTML = '';
+        models.forEach(function(id) {
+            var d = document.createElement('div');
+            d.className = 'dropdown-item';
+            d.dataset.model = id;
+            d.textContent = id;
+            d.addEventListener('click', function(e) {
+                e.stopPropagation();
+                selectModel(id);
+                var dd = $('modelDropdown');
+                if (dd) dd.classList.remove('open');
+            });
+            el.appendChild(d);
+        });
+    }
+
+    function selectModel(id) {
+        selectedModel = id;
+        var l = $('selectedModelLabel');
+        if (l) l.textContent = id;
+        try { localStorage.setItem('groq-model', id); } catch (e) {}
+        document.querySelectorAll('.dropdown-item').forEach(function(el) {
+            el.classList.toggle('active', el.dataset.model === id);
+        });
+    }
+
+    // ============================================================
+    // 8. AUTO-NAME
+    // ============================================================
+    function autoNameChat(chatId, userMsg, botMsg) {
+        var chat = chats.find(function(c) { return c.id === chatId; });
+        if (!chat || chat.autoNamed) return;
+        fetch(GROQ_BASE + '/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + API_KEY },
+            body: JSON.stringify({
+                model: selectedModel,
+                messages: [
+                    { role: 'system', content: 'Gib AUSSCHLIESSLICH einen kurzen Titel (max 5 Wörter) zurück, ohne Anführungszeichen, ohne Punkt. Deutsch.' },
+                    { role: 'user', content: 'Frage: "' + userMsg + '"\nAntwort: "' + botMsg.slice(0, 300) + '"\n\nTitel:' }
+                ],
+                stream: false,
+                temperature: 0.3,
+                max_tokens: 30
+            })
+        }).then(function(r) { return r.json(); }).then(function(j) {
+            var title = (j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content || '').trim();
+            title = title.replace(/^["'„“]|["'„“]$/g, '').replace(/[.!?]+$/g, '').trim();
+            if (title && title.length < 60) {
+                chat.title = title;
+                chat.autoNamed = true;
+                renderChatList();
+                saveChats();
+            }
+        }).catch(function(e) { console.warn('AutoName:', e); });
+    }
+
+    // ============================================================
+    // 9. SEND
+    // ============================================================
+    function sendMessage() {
+        var ui = $('userInput'), sb = $('sendBtn'), st = $('statusLine');
+        if (!ui || !sb) return;
+        var text = ui.value.trim();
+        if (!text || isStreaming) return;
+        if (!selectedModel) { addBotMessage('Bitte wähle zuerst ein Modell aus.'); return; }
+
+        var chat = getActiveChat();
+        if (!chat) chat = createChat(true);
+        var empty = document.querySelector('.empty-chat');
+        if (empty) empty.remove();
+
+        isStreaming = true;
+        sb.disabled = true;
+        ui.disabled = true;
+        ui.value = '';
+        if (st) st.textContent = 'Streaming...';
+
+        chat.messages.push({ role: 'user', content: text });
+        addUserMessage(text);
+
+        var isFirst = chat.messages.length === 1;
+        var bubble = createStreamingBubble();
+        if (!bubble) { isStreaming = false; sb.disabled = false; ui.disabled = false; return; }
+
+        var full = '';
+        currentController = new AbortController();
+
+        fetch(GROQ_BASE + '/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + API_KEY },
+            body: JSON.stringify({
+                model: selectedModel,
+                messages: chat.messages.map(function(m) { return { role: m.role, content: m.content }; }),
+                stream: true,
+                temperature: temperature,
+                max_tokens: 4096
+            }),
+            signal: currentController.signal
+        }).then(function(res) {
+            if (!res.ok) return res.text().then(function(t) { throw new Error('API ' + res.status + ': ' + t); });
+            var reader = res.body.getReader();
+            var decoder = new TextDecoder('utf-8');
+            var buffer = '';
+            var lastRender = 0;
+
+            function pump() {
+                return reader.read().then(function(r) {
+                    if (r.done) return;
+                    buffer += decoder.decode(r.value, { stream: true });
+                    var lines = buffer.split('\n');
+                    buffer = lines.pop() || '';
+                    lines.forEach(function(line) {
+                        var tr = line.trim();
+                        if (!tr || tr.indexOf('data: ') !== 0) return;
+                        var d = tr.slice(6).trim();
+                        if (d === '[DONE]') return;
+                        try {
+                            var j = JSON.parse(d);
+                            var delta = (j.choices && j.choices[0] && j.choices[0].delta && j.choices[0].delta.content) || '';
+                            if (delta) full += delta;
+                        } catch (e) {}
+                    });
+                    var now = performance.now();
+                    if (now - lastRender > 80) {
+                        bubble.innerHTML = renderMarkdown(full) + '<span class="cursor-blink"></span>';
+                        scrollToBottom();
+                        lastRender = now;
+                    }
+                    return pump();
+                });
+            }
+            return pump();
+        }).then(function() {
+            bubble.innerHTML = renderMarkdown(full);
+            if (st) st.textContent = 'Bereit';
+            chat.messages.push({ role: 'assistant', content: full });
+            saveChats();
+            if (isFirst && !chat.autoNamed) autoNameChat(chat.id, text, full);
+        }).catch(function(err) {
+            if (err.name === 'AbortError') {
+                bubble.innerHTML = renderMarkdown(full) + '<br><em>[Abgebrochen]</em>';
+            } else {
+                console.error(err);
+                bubble.innerHTML = renderMarkdown(full) + '<br><span style="color:#f87171;">' + esc(err.message) + '</span>';
+                if (st) st.textContent = 'Fehler';
+            }
+        }).then(function() {
+            isStreaming = false;
+            sb.disabled = false;
+            ui.disabled = false;
+            ui.focus();
+            currentController = null;
+        });
+    }
+
+    // ============================================================
+    // 10. COPY
+    // ============================================================
+    document.addEventListener('click', function(e) {
+        var btn = e.target.closest('.copy-btn');
+        if (!btn) return;
+        var cb = btn.closest('.code-block');
+        if (!cb) return;
+        var codeEl = cb.querySelector('pre code');
+        if (!codeEl) return;
+        var raw = codeEl.getAttribute('data-raw') ? decodeURIComponent(codeEl.getAttribute('data-raw')) : codeEl.textContent;
+        var orig = btn.innerHTML;
+        function done() {
+            btn.innerHTML = '<svg><use href="#icon-check"/></svg> Kopiert';
+            btn.classList.add('copied');
+            setTimeout(function() { btn.innerHTML = orig; btn.classList.remove('copied'); }, 1500);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(raw).then(done).catch(function() { fallback(raw, done); });
+        } else { fallback(raw, done); }
+    });
+    function fallback(text, cb) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); cb(); } catch (e) {}
+        document.body.removeChild(ta);
+    }
+
+    // ============================================================
+    // 11. INIT
+    // ============================================================
+    function init() {
+        console.log('=== INIT ===');
+
+        try {
+            var sv = parseFloat(localStorage.getItem('groq-temp'));
+            if (!isNaN(sv)) {
+                temperature = sv;
+                var tr0 = $('temperatureRange');
+                if (tr0) tr0.value = sv;
+                var tv0 = $('tempValue');
+                if (tv0) tv0.textContent = sv.toFixed(1);
+            }
+        } catch (e) {}
+
+        var tr = $('temperatureRange');
+        if (tr) {
+            tr.addEventListener('input', function() {
+                temperature = parseFloat(this.value);
+                var tv = $('tempValue');
+                if (tv) tv.textContent = temperature.toFixed(1);
+                try { localStorage.setItem('groq-temp', temperature); } catch (e) {}
+            });
+        }
+
+        var sb = $('settingsBtn'), sp = $('settingsPanel');
+        if (sb && sp) {
+            sb.addEventListener('click', function(e) {
+                e.stopPropagation();
+                sp.classList.toggle('open');
+            });
+        }
+
+        var dtr = $('dropdownTrigger'), dd = $('modelDropdown');
+        if (dtr && dd) {
+            dtr.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dd.classList.toggle('open');
+            });
+        }
+
+        document.addEventListener('click', function(e) {
+            if (sp && sb && !sp.contains(e.target) && !sb.contains(e.target)) sp.classList.remove('open');
+            if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+        });
+        if (sp) sp.addEventListener('click', function(e) { e.stopPropagation(); });
+
+        var sbt = $('sidebarToggle'), sbd = $('sidebar');
+        if (sbt && sbd) {
+            sbt.addEventListener('click', function() {
+                sbd.classList.toggle('collapsed');
+            });
+        }
+
+        var ncb = $('newChatBtn');
+        if (ncb) {
+            ncb.addEventListener('click', function() {
+                var a = getActiveChat();
+                if (a && a.messages.length === 0 && a.title === 'Neuer Chat') {
+                    renderChatList();
+                    renderActiveChat();
+                    saveChats();
+                    return;
+                }
+                createChat(true);
+            });
+        }
+
+        var sbBtn = $('sendBtn'), ui = $('userInput');
+        if (sbBtn) sbBtn.addEventListener('click', sendMessage);
+        if (ui) {
+            ui.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            ui.addEventListener('input', function() {
+                ui.style.height = 'auto';
+                ui.style.height = Math.min(ui.scrollHeight, 120) + 'px';
+            });
+        }
+
+        loadChats();
+        fetchModels();
+        if (ui) ui.focus();
+        console.log('=== INIT ENDE ===');
+    }
+
+    init();
+})();
+</script>
+</body>
+</html>
